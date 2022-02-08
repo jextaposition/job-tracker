@@ -1,3 +1,4 @@
+import { Toaster } from 'react-hot-toast';
 import AppContent from './components/AppContent';
 import AppHeader from './components/AppHeader';
 import PageTitle from './components/PageTitle';
@@ -5,13 +6,23 @@ import styles from './styles/modules/app.module.scss';
 
 function App() {
   return (
-    <div className='container'>
-      <PageTitle>job tracker</PageTitle>
-      <div className={styles.app__wrapper}>
-        <AppHeader />
-        <AppContent></AppContent>
+    <>
+      <div className='container'>
+        <PageTitle>job tracker</PageTitle>
+        <div className={styles.app__wrapper}>
+          <AppHeader />
+          <AppContent></AppContent>
+        </div>
       </div>
-    </div>
+      <Toaster
+        position='bottom-right'
+        toastOptions={{
+          style: {
+            fontSize: '1.4rem',
+          },
+        }}
+      />
+    </>
   );
 }
 

@@ -3,13 +3,32 @@ import styles from '../styles/modules/modal.module.scss';
 import { MdOutlineClose } from 'react-icons/md';
 import Button from './Button';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addJob } from '../slices/jobSlice';
+import { v4 as uuid } from 'uuid';
+import toast from 'react-hot-toast';
 
 const JobModal = ({ modalOpen, setModalOpen }) => {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState('');
   const [status, setStatus] = useState('incomplete');
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (title && status) {
+      dispatch(
+        addJob({
+          id: uuid(),
+          title,
+          status,
+          time: new Date().toLocaleString(),
+        })
+      );
+      toast.success('Job added successfully!');
+      setModalOpen(false);
+    } else {
+      toast.error('Title should not be empty');
+    }
   };
   return (
     modalOpen && (
@@ -24,14 +43,13 @@ const JobModal = ({ modalOpen, setModalOpen }) => {
           >
             <MdOutlineClose />
           </div>
-          <form className={styles.form} onSubmit={(e) => handleSubmit}>
+          <form className={styles.form} onSubmit={(e) => handleSubmit(e)}>
             <h1 className={styles.formTitle}>Create New Job</h1>
             <label htmlFor='title'>
               Title
               <input
                 type='text'
                 id='title'
-                name='title'
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
@@ -39,7 +57,6 @@ const JobModal = ({ modalOpen, setModalOpen }) => {
             <label htmlFor='status'>
               status
               <select
-                name='status'
                 id='status'
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
