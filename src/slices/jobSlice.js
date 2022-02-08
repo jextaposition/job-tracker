@@ -39,8 +39,21 @@ export const jobSlice = createSlice({
         );
       }
     },
+    deleteJob: (state, action) => {
+      const jobList = window.localStorage.getItem('jobList');
+      if (jobList) {
+        const jobListArr = JSON.parse(jobList);
+        jobListArr.forEach((job, index) => {
+          if (job.id === action.payload) {
+            jobListArr.splice(index, 1);
+          }
+        });
+        window.localStorage.setItem('jobList', JSON.stringify(jobListArr));
+        state.jobList = jobListArr;
+      }
+    },
   },
 });
 
-export const { addJob } = jobSlice.actions;
+export const { addJob, deleteJob } = jobSlice.actions;
 export default jobSlice.reducer;
