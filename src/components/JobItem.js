@@ -1,11 +1,16 @@
 import { format } from 'date-fns';
 import React from 'react';
+import toast from 'react-hot-toast';
 import { MdDelete, MdEdit } from 'react-icons/md';
+import { useDispatch } from 'react-redux';
+import { deleteJob } from '../slices/jobSlice';
 import styles from '../styles/modules/todoItem.module.scss';
 import { getClasses } from '../utils/getClasses';
 const JobItem = ({ job }) => {
+  const dispatch = useDispatch();
   const handleDelete = () => {
-    console.log('deleting');
+    dispatch(deleteJob(job.id));
+    toast.success('Job successfully deleted!');
   };
   const handleUpdate = () => {
     console.log('updating');
