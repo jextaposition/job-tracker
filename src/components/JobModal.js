@@ -4,30 +4,60 @@ import { MdOutlineClose } from 'react-icons/md';
 import Button from './Button';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addJob } from '../slices/jobSlice';
+import { addJob, updateJob } from '../slices/jobSlice';
 import { v4 as uuid } from 'uuid';
 import toast from 'react-hot-toast';
+import { useEffect } from 'react';
 
-const JobModal = ({ modalOpen, setModalOpen }) => {
+const JobModal = ({ type, modalOpen, setModalOpen, job }) => {
   const dispatch = useDispatch();
   const [title, setTitle] = useState('');
   const [status, setStatus] = useState('incomplete');
 
+  useEffect(() => {
+    if (type === 'update' && job) {
+      setTitle(job.title);
+      setStatus(job.status);
+    } else {
+      setTitle('');
+      setStatus('incomplete');
+    }
+  }, [type, job, modalOpen]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (title === '') {
+      toast.error('Please enter a title');
+      return;
+    }
     if (title && status) {
-      dispatch(
-        addJob({
-          id: uuid(),
-          title,
-          status,
-          time: new Date().toLocaleString(),
-        })
-      );
-      toast.success('Job added successfully!');
+      if (type === 'add') {
+        dispatch(
+          addJob({
+            id: uuid(),
+            title,
+            status,
+            time: new Date().toLocaleString(),
+          })
+        );
+        toast.success('Job added successfully!');
+      }
+      if (type === 'update') {
+        if (job.title !== title || job.status !== status) {
+          dispatch(
+            updateJob({
+              ...job,
+              title,
+              status,
+            })
+          );
+          toast.success(`${job.id} successfully updated!`);
+        } else {
+          toast.error('no changes were made!');
+          return;
+        }
+      }
       setModalOpen(false);
-    } else {
-      toast.error('Title should not be empty');
     }
   };
   return (
@@ -44,7 +74,9 @@ const JobModal = ({ modalOpen, setModalOpen }) => {
             <MdOutlineClose />
           </div>
           <form className={styles.form} onSubmit={(e) => handleSubmit(e)}>
-            <h1 className={styles.formTitle}>Create New Job</h1>
+            <h1 className={styles.formTitle}>
+              {type === 'update' ? 'Update' : 'Create New'} Job
+            </h1>
             <label htmlFor='title'>
               Title
               <input
@@ -67,7 +99,7 @@ const JobModal = ({ modalOpen, setModalOpen }) => {
             </label>
             <div className={styles.buttonContainer}>
               <Button type='submit' variant='primary'>
-                add job
+                {type === 'update' ? 'update' : 'add'} job
               </Button>
               <Button
                 type='button'
