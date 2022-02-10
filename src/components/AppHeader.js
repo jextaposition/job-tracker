@@ -16,7 +16,7 @@ const AppHeader = () => {
         <option value='incomplete'>Incomplete</option>
         <option value='complete'>Complete</option>
       </SelectButton>
-      <JobModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
+      <JobModal type='add' modalOpen={modalOpen} setModalOpen={setModalOpen} />
     </div>
   );
 };
