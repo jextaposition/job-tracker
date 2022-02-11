@@ -1,16 +1,26 @@
 import { format } from 'date-fns';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
-import { deleteJob } from '../slices/jobSlice';
+import { deleteJob, updateJob } from '../slices/jobSlice';
 import styles from '../styles/modules/todoItem.module.scss';
 import { getClasses } from '../utils/getClasses';
+import CheckButton from './CheckButton';
 import JobModal from './JobModal';
 
 const JobItem = ({ job }) => {
   const dispatch = useDispatch();
+  const [checked, setChecked] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (job.status === 'complete') {
+      setChecked(true);
+    } else {
+      setChecked(false);
+    }
+  }, [job.status]);
 
   const handleDelete = () => {
     dispatch(deleteJob(job.id));
@@ -19,11 +29,21 @@ const JobItem = ({ job }) => {
   const handleUpdate = () => {
     setUpdateModalOpen(true);
   };
+  const handleCheckbox = () => {
+    setChecked(!checked);
+    dispatch(
+      updateJob({
+        ...job,
+        status: checked ? 'incomplete' : 'complete',
+      })
+    );
+  };
+
   return (
     <>
       <div className={styles.item}>
         <div className={styles.todoDetails}>
-          []
+          <CheckButton checked={checked} handleCheckbox={handleCheckbox} />
           <div className={styles.texts}>
             <p
               className={getClasses([
