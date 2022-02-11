@@ -12,6 +12,7 @@ const getInitialJob = () => {
 };
 
 const initialValue = {
+  filterStatus: 'all',
   jobList: getInitialJob(),
 };
 
@@ -66,8 +67,12 @@ export const jobSlice = createSlice({
         state.jobList = jobListArr;
       }
     },
+    updateFilterStatus: (state, action) => {
+      state.filterStatus = action.payload;
+    },
   },
 });
 
-export const { addJob, deleteJob, updateJob } = jobSlice.actions;
+export const { addJob, deleteJob, updateJob, updateFilterStatus } =
+  jobSlice.actions;
 export default jobSlice.reducer;
