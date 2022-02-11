@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import { motion } from 'framer-motion';
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { MdDelete, MdEdit } from 'react-icons/md';
@@ -8,6 +9,11 @@ import styles from '../styles/modules/todoItem.module.scss';
 import { getClasses } from '../utils/getClasses';
 import CheckButton from './CheckButton';
 import JobModal from './JobModal';
+
+const child = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1 },
+};
 
 const JobItem = ({ job }) => {
   const dispatch = useDispatch();
@@ -41,7 +47,7 @@ const JobItem = ({ job }) => {
 
   return (
     <>
-      <div className={styles.item}>
+      <motion.div className={styles.item} variants={child}>
         <div className={styles.todoDetails}>
           <CheckButton checked={checked} handleCheckbox={handleCheckbox} />
           <div className={styles.texts}>
@@ -78,7 +84,7 @@ const JobItem = ({ job }) => {
             <MdEdit />
           </div>
         </div>
-      </div>
+      </motion.div>
       <JobModal
         type='update'
         job={job}
